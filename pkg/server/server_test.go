@@ -94,20 +94,23 @@ func TestRun(t *testing.T) {
 				t.Error("could not connect to server: ", err)
 			}
 
-			if _, err := conn.Write([]byte("hello\n")); err != nil {
+			_, err = conn.Write([]byte("hello\n"))
+			if err != nil {
 				t.Error("could not write payload to server:", err)
 			}
 
 			out := make([]byte, 1024)
-			if _, err := conn.Read(out); err == nil {
-				if bytes.Compare(out, []byte("ECHO: hello\n")) == 0 {
+			_, err = conn.Read(out)
+			if err == nil {
+				if bytes.Equal(out, []byte("ECHO: hello\n")) {
 					t.Error("response did match expected output")
 				}
 			} else {
 				t.Error("could not read from connection")
 			}
 
-			if _, err := conn.Write([]byte("STOP\n")); err != nil {
+			_, err = conn.Write([]byte("STOP\n"))
+			if err != nil {
 				t.Error("could not write payload to server:", err)
 			}
 
@@ -133,6 +136,6 @@ func connectionHandler(conn net.Conn) {
 		}
 
 		result := "ECHO: " + command + "\n"
-		conn.Write([]byte(string(result)))
+		conn.Write([]byte(string(result))) // nolint:errcheck
 	}
 }

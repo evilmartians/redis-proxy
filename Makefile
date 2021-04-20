@@ -32,23 +32,29 @@ run:
 test:
 	go test -count=1 -timeout=30s -race ./...
 
-dev-prepare:
+bin/shadow:
 	@which shadow &> /dev/null || \
 		env GO111MODULE=off go get golang.org/x/tools/go/analysis/passes/shadow/cmd/shadow
-	@which golangci-lint &> /dev/null || \
+
+bin/golangci-lint:
+	@test -x $$(go env GOPATH)/bin/golangci-lint || \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v1.39.0
-	@which gosec &> /dev/null || \
+
+bin/gosec:
+	@test -x $$(go env GOPATH)/bin/gosec || \
 		curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $$(go env GOPATH)/bin v2.7.0
 
-vet:
+vet: bin/shadow
 	go vet ./...
 	go vet -vettool=$$(which shadow) ./...
 
-sec:
-	gosec -quiet -confidence=medium -severity=medium  ./...
+sec: bin/gosec
+	$$(go env GOPATH)/bin/gosec -quiet -confidence=medium -severity=medium  ./...
 
 fmt:
 	go fmt ./...
 
-lint:
-	golangci-lint run
+lint: bin/golangci-lint
+	$$(go env GOPATH)/bin/golangci-lint run
+
+.PHONY: test
