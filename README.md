@@ -31,6 +31,8 @@ First, install the required dev tools:
 make dev-prepare
 ```
 
+If this command fails on MacBook with Apple silicon, try running it with `arch -x86_64` prefix.
+
 The following commands are available:
 
 ```shell
