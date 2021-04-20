@@ -2,7 +2,7 @@
 package config
 
 type Config struct {
-	Addr string `config:"addr,description=Proxy address if a form of <protocol>://<host>"`
+	Addr string `config:"addr,description=Proxy address if a form of <protocol>://<host> (where protocol one of tcp or unix)"`
 
 	LogLevel  string `config:"log_level"`
 	LogFile   string `config:"log_file,description=Path to a log file to write logs (prints to stdout if not specified)"`
@@ -11,6 +11,7 @@ type Config struct {
 
 func New() Config {
 	return Config{
+		Addr:      "tcp://127.0.0.1:0",
 		LogLevel:  "debug",
 		LogFormat: "text",
 	}
