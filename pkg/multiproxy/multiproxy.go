@@ -5,11 +5,15 @@ package multiproxy
 import (
 	"io"
 
+	"github.com/evilmartians/redis-proxy/pkg/redis"
 	log "github.com/sirupsen/logrus"
 )
 
 type Proxy struct {
 	logger *log.Entry
+
+	// TEMP
+	rdb redis.RedisClient
 }
 
 func New() (*Proxy, error) {
@@ -22,6 +26,14 @@ func New() (*Proxy, error) {
 // (except those marked as lazy)
 func (p *Proxy) Boot() error {
 	// TODO: to be implemented
+	rdb, err := redis.Connect("temp")
+
+	if err != nil {
+		return err
+	}
+
+	p.rdb = rdb
+
 	p.logger.Info("Successfully connected to databases")
 	return nil
 }
@@ -34,5 +46,10 @@ func (p *Proxy) Shutdown() {
 
 // NewSession creates a new session struct.
 func (p *Proxy) NewSession(io io.ReadWriter) *Session {
-	return &Session{io: io}
+	return NewSession(io, p)
+}
+
+// LookupClient returns a Redis client corresponding to the specified name
+func (p *Proxy) LookupClient(dbname string) redis.RedisClient {
+	return p.rdb
 }
