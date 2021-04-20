@@ -13,10 +13,10 @@ Run proxy with the configuration passed as a JSON file:
 ```shell
 $ ma-redis-proxy -c path/to/config.json
 
-=> INFO 2020-02-05T08:44:57.684Z context=main Starting Moon Active Redis Proxy v0.1.0
+=> INFO[2021-04-20T14:25:56+03:00] Starting MoonActive Redis Proxy v0.1.0 (pid: 68626)
 ```
 
-You can also provide configuration parameters through the corresponding environment variables (i.e. `MA_REDIS_PROXY_CONFIG`, etc).
+You can also provide configuration parameters through the corresponding environment variables (i.e. `MA_REDIS_PROXY_LOG_LEVEL=debug`, etc).
 
 For more information about available options run `ma-redis-proxy -h`.
 
