@@ -4,23 +4,35 @@ package multiproxy
 
 import (
 	"io"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type Proxy struct {
+	logger *log.Entry
 }
 
 func New() (*Proxy, error) {
-	return &Proxy{}, nil
+	logger := log.WithField("context", "proxy")
+
+	return &Proxy{logger: logger}, nil
 }
 
 // Boot initializes Redis clients for all databases
 // (except those marked as lazy)
-func (*Proxy) Boot() error {
+func (p *Proxy) Boot() error {
 	// TODO: to be implemented
+	p.logger.Info("Successfully connected to databases")
 	return nil
 }
 
+// Shutdown disconnects all the Redis pool (essentially causing clients to close their connections, too).
+// Each pool MUST wait for active calls to complete before closing.
+func (p *Proxy) Shutdown() {
+	// TODO: to be implemented
+}
+
 // NewSession creates a new session struct.
-func (*Proxy) NewSession(io io.ReadWriter) *Session {
+func (p *Proxy) NewSession(io io.ReadWriter) *Session {
 	return &Session{io: io}
 }

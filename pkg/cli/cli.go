@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/evilmartians/redis-proxy/internal/confita/prefixed_env"
 	"github.com/evilmartians/redis-proxy/pkg/config"
@@ -14,6 +16,7 @@ import (
 	"github.com/evilmartians/redis-proxy/pkg/version"
 	"github.com/heetch/confita"
 	"github.com/heetch/confita/backend/flags"
+	"github.com/syossan27/tebata"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -71,6 +74,23 @@ func Run() error {
 	go s.Run()
 
 	logger.Infof("Handle Redis connections at %s://%s", s.Type(), s.Addr())
+
+	t := tebata.New(syscall.SIGINT, syscall.SIGTERM)
+
+	t.Reserve(func() { // nolint:errcheck
+		logger.Infof("Shutting down... (hit Ctrl-C to stop immediately)")
+		go func() {
+			termSig := make(chan os.Signal, 1)
+			signal.Notify(termSig, syscall.SIGINT, syscall.SIGTERM)
+			<-termSig
+			logger.Warnf("Immediate termination requested. Stopped")
+			os.Exit(0)
+		}()
+	})
+	t.Reserve(s.Shutdown)     // nolint:errcheck
+	t.Reserve(proxy.Shutdown) // nolint:errcheck
+
+	t.Reserve(os.Exit, 0) // nolint:errcheck
 
 	select {}
 }
