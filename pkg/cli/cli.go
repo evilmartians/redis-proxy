@@ -4,6 +4,7 @@ package cli
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -62,7 +63,11 @@ func Run() error {
 		session := proxy.NewSession(c)
 
 		if perr = session.HandleCommands(); perr != nil {
-			sessionLogger.Errorf("Failed to handle client commnands: %v", perr)
+			if perr == io.EOF {
+				sessionLogger.Infof("Client disconnected")
+			} else {
+				sessionLogger.Errorf("Failed to handle client commnands: %v", perr)
+			}
 			return
 		}
 	})
