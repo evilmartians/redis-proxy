@@ -1,0 +1,18 @@
+version: '2.4'
+
+services:
+
+  redis-cluster:
+    environment:
+      IP: '0.0.0.0'
+    image: grokzen/redis-cluster:5.0.12
+    volumes:
+      - redis-cluster:/redis-data
+    ports:
+      - 7000-7009:7000-7009
+
+  redis:
+    image: redis:5.0.12-alpine
+
+volumes:
+  redis-cluster:
