@@ -47,10 +47,7 @@ func Run() error {
 		return err
 	}
 
-	// TODO: Get protocol and hostname from config
-	logger.Info("Handle Redis connections at tcp://127.0.0.1:4321")
-
-	s, err := server.New("tcp4", "127.0.0.1:4321", func(c net.Conn) {
+	s, err := server.New(conf.Addr, func(c net.Conn) {
 		defer c.Close()
 
 		sessionLogger := log.WithField("context", "server")
@@ -72,6 +69,8 @@ func Run() error {
 	}
 
 	go s.Run()
+
+	logger.Infof("Handle Redis connections at %s://%s", s.Type(), s.Addr())
 
 	select {}
 }
