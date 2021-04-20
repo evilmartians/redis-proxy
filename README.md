@@ -40,15 +40,6 @@ See more details in the [docs](docs/architecture.md).
 
 **NOTE:** Make sure Go 1.6+ installed.
 
-First, install the required dev tools:
-
-```shell
-# Installs golangci-lint, vet shadow, gosec
-make dev-prepare
-```
-
-If this command fails on MacBook with Apple silicon, try running it with `arch -x86_64` prefix.
-
 The following commands are available:
 
 ```shell
@@ -81,6 +72,8 @@ make vet
 make fmt
 ```
 
+**NOTE**: If the commands above fails on MacBook with Apple silicon, try running with `arch -x86_64` prefix.
+
 ### Links & Resources
 
 Here is the list of relevant resources and tools used to build this app:
@@ -89,3 +82,4 @@ Here is the list of relevant resources and tools used to build this app:
 - [Redis Cluster spec](https://redis.io/topics/cluster-spec).
 - [logrus](https://github.com/sirupsen/logrus): structured, pluggable logging.
 - [confita](https://github.com/heetch/confita): configuration management.
+- [mockery](https://github.com/vektra/mockery): test mocks.
