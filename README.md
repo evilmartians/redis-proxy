@@ -74,6 +74,16 @@ make fmt
 
 **NOTE**: If the commands above fails on MacBook with Apple silicon, try running with `arch -x86_64` prefix.
 
+### Git hooks
+
+To automatically lint and test code before commits/pushes it is recommended to install [Lefthook](https://github.com/evilmartians/lefthook):
+
+```sh
+brew install evilmartians/lefthook/lefthook
+
+lefthook install
+```
+
 ### Redis cluster
 
 To simulate a cluster on local machine we use docker-compose. To start cluster with 3 masters and 3 slaves run:
