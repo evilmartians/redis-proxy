@@ -58,3 +58,23 @@ lint: bin/golangci-lint
 	$$(go env GOPATH)/bin/golangci-lint run
 
 .PHONY: test
+
+# Docker compose related commands
+
+redis-cluster-up:
+	docker-compose -f ./etc/docker-compose.redis.yml up redis-cluster
+
+SHARDN ?= 1
+
+stop-shard:
+	docker-compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl stop redis-$(SHARDN)
+
+start-shard:
+	docker-compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl start redis-$(SHARDN)
+
+HOST ?= host.docker.internal
+PORT ?= 6379
+DBNUM ?= 0
+
+redis-benchmark:
+	docker-compose -f ./etc/docker-compose.redis.yml run redis redis-benchmark -q -n 1000 -c 50 -r 50 -k 1 -h $(HOST) -p $(PORT) --dbnum $(DBNUM)
