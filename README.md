@@ -74,6 +74,32 @@ make fmt
 
 **NOTE**: If the commands above fails on MacBook with Apple silicon, try running with `arch -x86_64` prefix.
 
+### Redis cluster
+
+To simulate a cluster on local machine we use docker-compose. To start cluster with 3 masters and 3 slaves run:
+
+```sh
+# Cluster is available on the 7000-7005 ports by default.
+make redis-cluster-up
+```
+
+To simulate cluster failover run:
+
+```sh
+# SHARDN is a shard number from 1 to n. Default: 1
+make stop-shard SHARDN=1
+
+# To start shard again, run:
+make start-shard SHARDN=1
+```
+
+Benchmark tool provided by Redis is also available as a docker container:
+
+```sh
+# By default it will try to connect to the local machine on port 6379
+make redis-benchmark HOST=host.docker.internal PORT=6379 DBNUM=0
+```
+
 ### Links & Resources
 
 Here is the list of relevant resources and tools used to build this app:
