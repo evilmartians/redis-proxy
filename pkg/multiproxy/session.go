@@ -34,7 +34,7 @@ func (st regularState) handle(s *Session, cmd *redis.Command) (error, sessionSta
 
 	// TODO: implement pipeline
 	// if cmd.Last {
-	_, err = s.writer.Write([]byte(response + "\r\n"))
+	_, err = s.writer.Write(response)
 
 	if err != nil {
 		return err, nil

@@ -18,7 +18,7 @@ type Command struct {
 }
 
 type RedisClient interface {
-	Execute(cmd *Command) (string, error)
+	Execute(cmd *Command) ([]byte, error)
 }
 
 type Client struct {
@@ -36,13 +36,12 @@ func Connect(id string) (*Client, error) {
 	return &Client{id: id, rdb: rdb}, nil
 }
 
-func (c *Client) Execute(cmd *Command) (string, error) {
+func (c *Client) Execute(cmd *Command) ([]byte, error) {
 	args := append([]interface{}{cmd.Name}, cmd.Args...)
 
 	ctx := context.Background()
-	// TODO: Use custom cmd to return raw text data
-	redisCmd := redis.NewCmd(ctx, args...)
+	redisCmd := redis.NewCmdWithRawResponse(ctx, args...)
 	_ = c.rdb.Process(ctx, redisCmd)
 
-	return redisCmd.Text()
+	return redisCmd.RawResponse(), nil
 }

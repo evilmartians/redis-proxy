@@ -11,14 +11,16 @@ type RedisClient struct {
 }
 
 // Execute provides a mock function with given fields: cmd
-func (_m *RedisClient) Execute(cmd *redis.Command) (string, error) {
+func (_m *RedisClient) Execute(cmd *redis.Command) ([]byte, error) {
 	ret := _m.Called(cmd)
 
-	var r0 string
-	if rf, ok := ret.Get(0).(func(*redis.Command) string); ok {
+	var r0 []byte
+	if rf, ok := ret.Get(0).(func(*redis.Command) []byte); ok {
 		r0 = rf(cmd)
 	} else {
-		r0 = ret.Get(0).(string)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]byte)
+		}
 	}
 
 	var r1 error
