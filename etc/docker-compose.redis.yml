@@ -13,6 +13,8 @@ services:
 
   redis:
     image: redis:5.0.12-alpine
+    ports:
+      - 6379:6379
 
 volumes:
   redis-cluster:

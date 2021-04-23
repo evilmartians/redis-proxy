@@ -64,6 +64,9 @@ lint: bin/golangci-lint
 redis-cluster-up:
 	docker-compose -f ./etc/docker-compose.redis.yml up redis-cluster
 
+redis-up:
+	docker-compose -f ./etc/docker-compose.redis.yml up redis
+
 SHARDN ?= 1
 
 stop-shard:
@@ -74,7 +77,7 @@ start-shard:
 
 HOST ?= host.docker.internal
 PORT ?= 6379
-DBNUM ?= 0
+DBNUM ?= 42
 
 redis-benchmark:
 	docker-compose -f ./etc/docker-compose.redis.yml run redis redis-benchmark -q -n 1000 -c 50 -r 50 -k 1 -h $(HOST) -p $(PORT) --dbnum $(DBNUM)
