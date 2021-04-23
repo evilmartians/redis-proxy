@@ -85,7 +85,7 @@ func TestHandleCommandWhenRegularState(t *testing.T) {
 
 		redisMock.On("Execute",
 			&redis.Command{Name: "SET", Args: []interface{}{"a", "1"}, Last: true},
-		).Return("+OK", nil)
+		).Return([]byte("+OK\r\n"), nil)
 
 		b.Write([]byte("SET a 1\r\n"))
 
@@ -100,13 +100,13 @@ func TestHandleCommandWhenRegularState(t *testing.T) {
 
 		redisMock.On("Execute",
 			&redis.Command{Name: "GET", Args: []interface{}{"a"}, Last: true},
-		).Return(":1", nil)
+		).Return([]byte("$1\r\n1\r\n"), nil)
 
 		b.Write([]byte("GET a\r\n"))
 
 		err := session.HandleCommand()
 		assert.NoError(t, err)
 
-		assert.Equal(t, ":1\r\n", b.String())
+		assert.Equal(t, "$1\r\n1\r\n", b.String())
 	})
 }
