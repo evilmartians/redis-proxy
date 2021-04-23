@@ -6,6 +6,10 @@ Proxy uses [Redis Protocol](https://redis.io/topics/protocol) to quack like a Re
 It executes client commands, handles `MOVED` and `ASK` redirects and routes Redis responses back to the clients.
 It also supports multiple clusters with database number-to-cluster mapping.
 
+## Proxy features
+
+Besides from multiplexing connections, the proxy provides some additional features.
+
 ### Transactions
 
 🚧 _Work in progress_
@@ -20,12 +24,5 @@ During transaction Proxy aggregates commands in memory and flushes it on `EXEC`.
 
 Proxy supports `SCRIPT LOAD` and `EVALSHA` commands.
 
-On `SCRIPT LOAD` proxy loads scripts to each node and keeps in memory to load to newly added nodes, 
+On `SCRIPT LOAD` proxy loads scripts to each node and keeps in memory to load to newly added nodes,
 so it is required to send script to the proxy even if it is already exists on the cluster shards.
-
-### Unsupported commands (TODO: update list)
-
-- All blocking commands (including pub/sub and streams)
-- `CLUSTER`
-- `DISCARD`
-- `WATCH` 
