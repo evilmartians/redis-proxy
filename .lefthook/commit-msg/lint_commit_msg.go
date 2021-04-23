@@ -10,8 +10,8 @@ import (
 const MaxLength = 50
 
 var (
-	types = []string{"chore", "docs", "feat", "fix", "refactor", "revert", "style", "test"}
-	scopes = []string{"cli", "config", "proxy", "redis", "server"}
+	types  = []string{"chore", "docs", "feat", "fix", "refactor", "revert", "style", "test"}
+	scopes = []string{"cli", "config", "proxy", "redis", "server", "dev"}
 )
 
 func main() {
