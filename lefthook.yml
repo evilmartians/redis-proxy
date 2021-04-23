@@ -3,10 +3,10 @@ pre-commit:
   commands:
     lint:
       glob: "*.go"
-      run: golangci-lint run {staged_files}
+      run: make lint
     vet:
       glob: "*.go"
-      run: go vet {staged_files} && go vet -vettool=$(which shadow) {staged_files}
+      run: make vet
 
 pre-push:
   commands:
