@@ -16,6 +16,10 @@ type sessionState interface {
 
 type regularState struct{}
 
+func init() {
+	redisproto.MaxNumArg = 100
+}
+
 func (st regularState) handle(s *Session, cmd *redis.Command) (error, sessionState) {
 	if cmd.Name == "SELECT" {
 		err := s.writer.WriteError("ERR re-selecting database is not allowed")
