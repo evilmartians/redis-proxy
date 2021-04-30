@@ -17,5 +17,12 @@ services:
     ports:
       - 6379:6379
 
+  k6:
+    build:
+      context: .
+      dockerfile: ./k6.Dockerfile
+      args:
+        K6_VERSION: 'v0.31.1'
+
 volumes:
   redis-cluster:
