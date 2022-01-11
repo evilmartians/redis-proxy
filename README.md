@@ -1,8 +1,12 @@
 # Redis Proxy
 
+**IMPORTANT 🚧**: This project has been suspended and we don't have plans to complete it in the nearest future.
+
 Redis Proxy aims to reduce the number for concurrent connections to Redis databases from the monolith. Instead of initializing connections to Redis directly, clients connect to the proxy, which multiplex commands (using a small, limited number of _real_ Redis connections).
 
 The proxy is designed to run a sidecar service on a EC2 machine (which runs dozens of app instances).
+
+![Before After Diagram](docs/diagram.png)
 
 ## Installation
 
