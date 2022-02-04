@@ -34,7 +34,7 @@ func TestNew(t *testing.T) {
 		{
 			"With unsupported protocol",
 			"ftp://127.0.0.1:4321",
-			"Unsupported protocol: ftp",
+			"unsupported protocol: ftp",
 			"",
 		},
 		{
@@ -130,12 +130,12 @@ func connectionHandler(conn net.Conn) {
 			break
 		}
 
-		command := strings.TrimSpace(string(input))
+		command := strings.TrimSpace(input)
 		if command == "STOP" {
 			break
 		}
 
 		result := "ECHO: " + command + "\n"
-		conn.Write([]byte(string(result))) // nolint:errcheck
+		conn.Write([]byte(result)) // nolint:errcheck
 	}
 }

@@ -10,16 +10,16 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/heetch/confita"
+	"github.com/heetch/confita/backend/flags"
+	log "github.com/sirupsen/logrus"
+	"github.com/syossan27/tebata"
+
 	"github.com/evilmartians/redis-proxy/internal/confita/prefixed_env"
 	"github.com/evilmartians/redis-proxy/pkg/config"
 	"github.com/evilmartians/redis-proxy/pkg/multiproxy"
 	"github.com/evilmartians/redis-proxy/pkg/server"
 	"github.com/evilmartians/redis-proxy/pkg/version"
-	"github.com/heetch/confita"
-	"github.com/heetch/confita/backend/flags"
-	"github.com/syossan27/tebata"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Run configures and initializes the application,
@@ -132,14 +132,13 @@ func initLogger(conf config.Config) error {
 		log.SetOutput(os.Stdout)
 	}
 
-	if conf.LogFormat == "text" {
-		log.SetFormatter(&log.TextFormatter{
-			FullTimestamp: true,
-		})
-	} else if conf.LogFormat == "json" {
+	switch conf.LogFormat {
+	case "text":
+		log.SetFormatter(&log.TextFormatter{FullTimestamp: true})
+	case "json":
 		log.SetFormatter(&log.JSONFormatter{})
-	} else {
-		return fmt.Errorf("Unknown log formatter: %s", conf.LogFormat)
+	default:
+		return fmt.Errorf("unknown log formatter: %s", conf.LogFormat)
 	}
 
 	return nil

@@ -1,0 +1,32 @@
+# See: https://golangci-lint.run/usage/linters/
+
+linters:
+  enable:
+    - bodyclose
+    - decorder
+    - dupl
+    - errname
+    - gci
+    - gocritic
+    - gofmt
+    - gosec
+    - govet
+    - grouper
+    - misspell
+    - noctx
+    - stylecheck
+    - tenv
+    - unconvert
+    - wastedassign
+
+linters-settings:
+  stylecheck:
+    checks: ["all", "-ST1003"]
+
+  gci:
+    local-prefixes: github.com/evilmartians/redis-proxy
+
+  govet:
+    check-shadowing: true
+    enable-all: true
+    disable: fieldalignment

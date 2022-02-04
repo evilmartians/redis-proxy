@@ -14,6 +14,4 @@ jobs:
     - uses: actions/setup-go@v2
       with:
         go-version: 1.16.x
-    - run: make vet
-    - run: make sec
     - run: make lint
