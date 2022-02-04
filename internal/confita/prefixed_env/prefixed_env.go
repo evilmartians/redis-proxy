@@ -18,7 +18,7 @@ func NewBackend(prefix string) backend.Backend {
 		if val := os.Getenv(key); val != "" {
 			return []byte(val), nil
 		}
-		key = strings.Replace(strings.ToUpper(key), "-", "_", -1)
+		key = strings.ReplaceAll(strings.ToUpper(key), "-", "_")
 		if val := os.Getenv(key); val != "" {
 			return []byte(val), nil
 		}

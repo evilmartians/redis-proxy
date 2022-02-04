@@ -6,12 +6,13 @@ import (
 	"io"
 	"strings"
 
-	"github.com/evilmartians/redis-proxy/pkg/redis"
 	"github.com/secmask/go-redisproto"
+
+	"github.com/evilmartians/redis-proxy/pkg/redis"
 )
 
 type sessionState interface {
-	handle(s *Session, cmd *redis.Command) (error, sessionState)
+	handle(s *Session, cmd *redis.Command) (sessionState, error)
 }
 
 type regularState struct{}
@@ -20,20 +21,20 @@ func init() {
 	redisproto.MaxNumArg = 100
 }
 
-func (st regularState) handle(s *Session, cmd *redis.Command) (error, sessionState) {
+func (st regularState) handle(s *Session, cmd *redis.Command) (sessionState, error) {
 	if cmd.Name == "SELECT" {
 		err := s.writer.WriteError("ERR re-selecting database is not allowed")
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 		s.writer.Flush()
-		return fmt.Errorf("SELECT is called after handshake"), nil
+		return nil, fmt.Errorf("SELECT is called after handshake")
 	}
 
 	response, err := s.rdb.Execute(cmd)
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	// TODO: implement pipeline
@@ -41,12 +42,12 @@ func (st regularState) handle(s *Session, cmd *redis.Command) (error, sessionSta
 	_, err = s.writer.Write(response)
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	err = s.writer.Flush()
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	return nil, nil
@@ -54,26 +55,26 @@ func (st regularState) handle(s *Session, cmd *redis.Command) (error, sessionSta
 
 type handshakeState struct{}
 
-func (st handshakeState) handle(s *Session, cmd *redis.Command) (error, sessionState) {
+func (st handshakeState) handle(s *Session, cmd *redis.Command) (sessionState, error) {
 	if cmd.Name != "SELECT" {
 		err := s.writer.WriteError("ERR command is called before `select`")
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 
 		err = s.writer.Flush()
 		if err != nil {
-			return err, nil
+			return nil, err
 		}
 
-		return fmt.Errorf("Command called before SELECT: %s", cmd.Name), nil
+		return nil, fmt.Errorf("command called before SELECT: %s", cmd.Name)
 	}
 
 	db := cmd.Args[0].(string)
 	client := s.proxy.LookupClient(db)
 
 	if client == nil {
-		return fmt.Errorf("Database not found: %s", db), nil
+		return nil, fmt.Errorf("database not found: %s", db)
 	}
 
 	s.dbname = db
@@ -82,14 +83,14 @@ func (st handshakeState) handle(s *Session, cmd *redis.Command) (error, sessionS
 	err := s.writer.WriteSimpleString("OK")
 
 	if err != nil {
-		return err, nil
+		return nil, err
 	}
 
 	if cmd.Last {
 		s.writer.Flush()
 	}
 
-	return nil, regularState{}
+	return regularState{}, nil
 }
 
 // Session contains the reference to the target Redis pool,
@@ -113,7 +114,7 @@ func NewSession(io io.ReadWriter, p *Proxy) *Session {
 	return &Session{io: io, parser: parser, writer: writer, proxy: p, state: handshakeState{}}
 }
 
-// HandleCommands continuosly reads and executes commands from IO
+// HandleCommands continuously reads and executes commands from IO
 func (s *Session) HandleCommands() error {
 	for {
 		err := s.HandleCommand()
@@ -150,7 +151,7 @@ func (s *Session) HandleCommand() error {
 		return handler(s, command)
 	}
 
-	err, newState := s.state.handle(s, command)
+	newState, err := s.state.handle(s, command)
 
 	if err != nil {
 		return err

@@ -5,8 +5,9 @@ package multiproxy
 import (
 	"io"
 
-	"github.com/evilmartians/redis-proxy/pkg/redis"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/evilmartians/redis-proxy/pkg/redis"
 )
 
 type Proxy struct {

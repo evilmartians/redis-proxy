@@ -6,9 +6,10 @@ import (
 	"os"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/evilmartians/redis-proxy/pkg/redis"
 	"github.com/evilmartians/redis-proxy/test/mocks"
-	"github.com/stretchr/testify/assert"
 )
 
 var (

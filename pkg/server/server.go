@@ -42,7 +42,7 @@ func New(addr string, handler Handler) (*Server, error) {
 	socketType, ok := protocolToSocketType[protocol]
 
 	if !ok {
-		return nil, fmt.Errorf("Unsupported protocol: %s", protocol)
+		return nil, fmt.Errorf("unsupported protocol: %s", protocol)
 	}
 
 	l, err := net.Listen(socketType, hostname)
