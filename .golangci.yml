@@ -21,6 +21,7 @@ linters:
 
 linters-settings:
   stylecheck:
+    # ST1003: naming linter, e.g. fails on underscores in package names
     checks: ["all", "-ST1003"]
 
   gci:
