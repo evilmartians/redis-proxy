@@ -1,4 +1,4 @@
-package prefixed_env
+package prefixed_env // nolint:stylecheck
 
 import (
 	"context"
