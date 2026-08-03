@@ -44,25 +44,25 @@ lint: bin/golangci-lint
 # Docker compose related commands
 
 redis-cluster-up:
-	docker-compose -f ./etc/docker-compose.redis.yml up redis-cluster
+	docker compose -f ./etc/docker-compose.redis.yml up redis-cluster
 
 redis-up:
-	docker-compose -f ./etc/docker-compose.redis.yml up redis
+	docker compose -f ./etc/docker-compose.redis.yml up redis
 
 SHARDN ?= 1
 
 stop-shard:
-	docker-compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl stop redis-$(SHARDN)
+	docker compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl stop redis-$(SHARDN)
 
 start-shard:
-	docker-compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl start redis-$(SHARDN)
+	docker compose -f ./etc/docker-compose.redis.yml exec redis-cluster supervisorctl start redis-$(SHARDN)
 
 HOST ?= host.docker.internal
 PORT ?= 6379
 DBNUM ?= 42
 
 redis-benchmark:
-	docker-compose -f ./etc/docker-compose.redis.yml run redis redis-benchmark -q -n 1000 -c 50 -r 50 -k 1 -h $(HOST) -p $(PORT) --dbnum $(DBNUM)
+	docker compose -f ./etc/docker-compose.redis.yml run redis redis-benchmark -q -n 1000 -c 50 -r 50 -k 1 -h $(HOST) -p $(PORT) --dbnum $(DBNUM)
 
 k6-benchmark:
-	docker-compose -f ./etc/docker-compose.redis.yml run k6 run -vu 100 --duration 30s -e HOST=$(HOST) -e PORT=$(PORT) -e DBNUM=$(DBNUM) - <./etc/k6.js
+	docker compose -f ./etc/docker-compose.redis.yml run k6 run -vu 100 --duration 30s -e HOST=$(HOST) -e PORT=$(PORT) -e DBNUM=$(DBNUM) - <./etc/k6.js
